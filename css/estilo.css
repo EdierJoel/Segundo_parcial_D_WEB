@@ -1,0 +1,45 @@
+body{
+	font-family: 'Raleway', sans-serif;
+}
+
+header{background: url("../img/background_header.jpg")no-repeat;height: 700px;background-size: cover;
+}
+
+#logotipo{margin-top: 40px;}
+
+header .nav{justify-content: flex-end;}
+
+header .nav-link{ font-size: 13px;color: #ffffff;padding-top: 40px}
+header .nav-link:hover{background: #fff;color: #31344e}
+
+#text1{ font-size:  65px;font-weight: bold;margin-top: 155px;color:#fff; text-align: center;}
+#text2{font-size:  65px;font-weight: bold;color: #fff; text-align: center;}
+#text3{font-size:  21px; color: #fff; text-align: center;}
+#text4{font-size:  21px; color: #fff; text-align: center;}
+#button {margin-top: 80px;}
+
+#SegundaParte{ font-family: 'Relaway';  margin-top: 110px;  margin-bottom: 110px;	text-align: center; color: #000; font-size: 11px;}
+
+#TerceraParte{ margin-top: 40px;  margin-bottom: 40px;}
+#tercera{  margin-top: 1px;  margin-left: 1px;  margin-right: 1px;}
+
+#CuartaPartetexto{  font-family: 'Relaway';}
+#role{ color: #E83737;}
+
+#pie{  text-align: center;  margin-top: 110px;  margin-bottom: 110px;}
+#button2 {  margin-top: 30px;}
+
+#QuintaParte{  margin-top: 35px;  background: url("../img/Morado.png")no-repeat;height: 400;background-size: cover;}
+#H2QP{  color: #FFF; font-family: 'Relaway';}
+
+
+#PQP{color: #FFF;  font-family: 'Relaway';  font-size: 15px;}
+
+#prefinal{  text-align: center;  margin-top: 110px;  color: #FFF;  background: url("../img/Pie1.png")no-repeat;height: 250px;background-size: cover;}
+#Prefinalp{  font-family: 'Relaway';  color: #9E9E9D;  font-size: 13px;}
+
+#copyright{  background: url("../img/PieFinal.png")no-repeat; height: 95px; background-size: cover;}
+
+#copyrightp{  margin-top: 40px;  font-family: 'Relaway';  color: #9E9E9D;  text-align: center;  margin-top: 20px;}
+
+
