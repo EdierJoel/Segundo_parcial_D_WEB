@@ -1,23 +1,46 @@
 ﻿<?php  
 	require_once("_db.php");
-    switch ($_POST["action"]) {
+    switch ($_POST["accion"]) {
     
     case 'login':
 			
     login();
 			
     break;
-		
-		
+    case 'consultar_usuarios':
+	consultar_usuarios();
+	break;
+	case 'insertar_usuarios':
+	insertar_usuarios();
+	break;
     default:
-
-    # code...
-
     break;
-	
 }
-	
-      function login(){
+function consultar_usuarios(){
+	global $mysqli;
+	$consulta = "SELECT * FROM usuarios";
+	$resultado = mysqli_query($mysqli, $consulta);
+	$arreglo = [];
+	while($fila = mysqli_fetch_array($resultado)){
+		array_push($arreglo, $fila);
+	}
+	echo json_encode($arreglo); //Imprime el JSON ENCODEADO
+}
+function insertar_usuarios(){
+	global $mysqli;
+	$nombre_usr = $_POST["nombre"];
+	$correo_usr = $_POST["correo"];	
+	$password = $_POST["password"];	
+	$telefono_usr = $_POST["telefono"];	
+	$consultain = "INSERT INTO usuarios VALUES('','$nombre_usr','$correo_usr','$password', '$telefono_usr', 1)";
+	$resultadoin = mysqli_query($mysqli, $consultain);
+	$arregloin = [];
+	while($filain = mysqli_fetch_array($resultadoin)){
+		array_push($arregloin, $filain);
+	}
+	echo json_encode($arregloin); //Imprime el JSON ENCODEADO
+}
+	 function login(){
 		global $mysqli;
 		// Conectar a Base de Datos.
 		$correo = $_POST["correo"];

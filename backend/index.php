@@ -34,7 +34,7 @@
     let correo = $("#inputEmail").val();
     let pass = $("#inputPassword").val();
     let obj = {
-      "action" : "login",
+      "accion" : "login",
       "correo" : correo,
       "password" : pass  
     };
