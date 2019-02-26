@@ -1,20 +1,29 @@
-﻿<?php  
-	require_once("_db.php");
-    switch ($_POST["accion"]) {
-    
-    case 'login':
-			
-    login();
-			
-    break;
-    case 'consultar_usuarios':
+<?php 
+require_once("_db.php");
+switch ($_POST["accion"]) {
+	case 'login':
+	login();
+	break;
+	case 'consultar_usuarios':
 	consultar_usuarios();
 	break;
 	case 'insertar_usuarios':
 	insertar_usuarios();
 	break;
-    default:
-    break;
+	case 'consultar_testimonials':
+	consultar_testimonials();
+	break;
+	case 'insertar_testimonials':
+	insertar_testimonials();
+	break;
+	case 'consultar_download':
+	consultar_download();
+	break;
+	case 'insertar_download':
+	insertar_download();
+	break;
+	default:
+	break;
 }
 function consultar_usuarios(){
 	global $mysqli;
@@ -24,7 +33,7 @@ function consultar_usuarios(){
 	while($fila = mysqli_fetch_array($resultado)){
 		array_push($arreglo, $fila);
 	}
-	echo json_encode($arreglo); //Imprime el JSON ENCODEADO
+	echo json_encode($arreglo);
 }
 function insertar_usuarios(){
 	global $mysqli;
@@ -38,38 +47,86 @@ function insertar_usuarios(){
 	while($filain = mysqli_fetch_array($resultadoin)){
 		array_push($arregloin, $filain);
 	}
-	echo json_encode($arregloin); //Imprime el JSON ENCODEADO
+	echo json_encode($arregloin);
 }
-	 function login(){
+/////TESTIMONIALS
+function consultar_testimonials(){
+	global $mysqli;
+	$consulta = "SELECT * FROM testimonial";
+	$resultado = mysqli_query($mysqli, $consulta);
+	$arreglo = [];
+	while($fila = mysqli_fetch_array($resultado)){
+		array_push($arreglo, $fila);
+	}
+	echo json_encode($arreglo);
+}
+function insertar_testimonials(){
+	global $mysqli;
+	$img_tes = $_POST["imagen"];
+	$cita_tes = $_POST["cita"];	
+	$persona_tes = $_POST["persona"];	
+	$consultain = "INSERT INTO testimonial VALUES('','$img_tes','$cita_tes','$persona_tes')";
+	$resultadoin = mysqli_query($mysqli, $consultain);
+	$arregloin = [];
+	while($filain = mysqli_fetch_array($resultadoin)){
+		array_push($arregloin, $filain);
+	}
+	echo json_encode($arregloin);
+}
+
+/////DOWNLOADS
+function consultar_download(){
+	global $mysqli;
+	$consulta = "SELECT * FROM download";
+	$resultado = mysqli_query($mysqli, $consulta);
+	$arreglo = [];
+	while($fila = mysqli_fetch_array($resultado)){
+		array_push($arreglo, $fila);
+	}
+	echo json_encode($arreglo);
+}
+function insertar_download(){
+	global $mysqli;
+	$titulo_do = $_POST["titulo"];
+	$subtitulo_do = $_POST["subtitulo"];	
+	$boton_do = $_POST["boton"];	
+	$consultain = "INSERT INTO download VALUES('','$titulo_do','$subtitulo_do','$boton_do')";
+	$resultadoin = mysqli_query($mysqli, $consultain);
+	$arregloin = [];
+	while($filain = mysqli_fetch_array($resultadoin)){
+		array_push($arregloin, $filain);
+	}
+	echo json_encode($arregloin);
+}
+
+
+	function login(){
 		global $mysqli;
-		// Conectar a Base de Datos.
 		$correo = $_POST["correo"];
 		$pass = $_POST["password"];	
-		// Consultar a Base de Datos que exista el usuario.
 		$consulta = "SELECT * FROM usuarios WHERE correo_usr = '$correo'";
 		$resultado = $mysqli->query($consulta);
 		$fila = $resultado->fetch_assoc();
 		
 		if ($fila == 0) 
 			{
-				// 	Si el usuario no existe imprimir = 2
-				echo "Usuario no existe Error 02";
+				echo "El usuario no existe [ERROR-02]";
 
 			}
-
-			// 	Si el usuario existe, conusltar que el password sea correcto. 
 		else if ($fila["password"] != $pass) 
 			{
 				$consulta = "SELECT * FROM usuarios WHERE correo_usr = '$correo' AND password = '$pass'";
 				$resultado = $mysqli->query($consulta);
 				$fila = $resultado->fetch_assoc();
-				// 			Si el password no es correcto, imprimir codigo de error 0.
-				echo "Password es Incorrecto Error 0";	
+				echo "El Password es Incorrecto [ERROR-00]";
+
+				
 			}
 				else if($correo == $fila["correo_usr"] && $pass == $fila["password"])
 				{
-					// 			Si el password es correcto imprimir = 1 
-					echo "Usuario y Password son Correctos Acceso 01"	;
-					}
+					echo "El Usuario y Password son Correctos [ACESSO-01]"	;
+					
+				}
 			}
-?>		
+
+?>

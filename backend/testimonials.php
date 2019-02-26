@@ -12,11 +12,11 @@
   <link href="css/estilos.css" rel="stylesheet">
 </head>
 <body>
-  <?php require_once("navbar.php");   ?>
+  <?php require_once("navbar.php");?>
 
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" id="main">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">Usuarios</h1>
+          <h1 class="h2">Testimonials</h1>
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
               <button type="button" class="btn btn-sm btn-outline-danger cancelar">Cancelar</button>
@@ -24,13 +24,14 @@
             </div>
           </div>
         </div>
-        <h2>Usuarios</h2>
+        <h2>Testimonials</h2>
         <div class="table-responsive view" id="show_data">
-          <table class="table table-striped table-sm" id="list-usuarios">
+          <table class="table table-striped table-sm" id="list-testimonials">
             <thead>
               <tr>
-                <th>Nombre</th>
-                <th>Teléfono</th>
+                <th>Ruta Imagen</th>
+                <th>Cita</th>
+                <th>Persona</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -42,22 +43,18 @@
             <div class="row">
               <div class="col">
                 <div class="form-group">
-                  <label for="nombre">Nombre</label>
-                  <input type="text" id="nombre" name="nombre" class="form-control">
+                  <label for="imagen">Ruta Imagen</label>
+                  <input type="text" id="imagen" name="imagen" class="form-control">
                 </div>
                 <div class="form-group">
-                  <label for="correo">Correo Electrónico</label>
-                  <input type="email" id="correo" name="correo" class="form-control">
+                  <label for="cita">Cita</label>
+                  <input type="text" id="cita" name="cita" class="form-control">
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
-                  <label for="telefono">Teléfono</label>
-                  <input type="tel" id="telefono" name="telefono" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label for="password">Contraseña</label>
-                  <input type="password" id="password" name="password" class="form-control">
+                  <label for="persona">Persona</label>
+                  <input type="text" id="persona" name="persona" class="form-control">
                 </div>
               </div>
             </div>
@@ -78,35 +75,34 @@
   <script>
     function change_view(vista = 'show_data'){
       $("#main").find(".view").each(function(){
-        // $(this).addClass("d-none");
         $(this).slideUp('fast');
         let id = $(this).attr("id");
         if(vista == id){
           $(this).slideDown(300);
-          // $(this).removeClass("d-none");
         }
       });
 
     }
     function consultar(){
       let obj = {
-        "accion" : "consultar_usuarios"
+        "accion" : "consultar_testimonials"
       };
       $.post("includes/_funciones.php", obj, function(respuesta){
         let template = ``;
         $.each(respuesta,function(i,e){
           template += `
           <tr>
-          <td>${e.nombre_usr}</td>
-          <td>${e.telefono_usr}</td>
+          <td>${e.img_tes}</td>
+          <td>${e.cita_tes}</td>
+          <td>${e.persona_tes}</td>
           <td>
-          <a href="#" data-id="${e.id_usr}">Editar</a>
-          <a href="#" data-id="${e.id_usr}">Eliminar</a>
+          <a href="#" data-id="${e.id_tes}">Editar</a>
+          <a href="#" data-id="${e.id_tes}">Eliminar</a>
           </td>
           </tr>
           `;
         });
-        $("#list-usuarios tbody").html(template);
+        $("#list-testimonials tbody").html(template);
       },"JSON");
     }
     $(document).ready(function(){
@@ -118,16 +114,14 @@
     });
 
     $("#guardar_datos").click(function(guardar){
-      let nombre = $("#nombre").val();
-      let correo = $("#correo").val();
-      let telefono = $("#telefono").val();
-      let password = $("#password").val();
+      let imagen = $("#imagen").val();
+      let cita = $("#cita").val();
+      let persona = $("#persona").val();
       let obj ={
-        "accion" : "insertar_usuarios",
-        "nombre" : nombre,
-        "correo" : correo,
-        "password" : password,
-        "telefono" : telefono
+        "accion" : "insertar_testimonials",
+        "imagen" : imagen,
+        "cita" : cita,
+        "persona" : persona
       }
       $("#form_data").find("input").each(function(){
         $(this).removeClass("has-error");
@@ -140,10 +134,10 @@
       });
       $.post("includes/_funciones.php", obj, function(verificado){ 
       if (verificado != "" ) {
-       alert("Usuario Registrado");
+       alert("Testimonio Registrado");
         }
       else {
-        alert("Usuario NO Registrado");
+        alert("Testimonio NO Registrado");
       } 
      }
      );
