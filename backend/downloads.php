@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -39,7 +38,7 @@
           </table>
         </div>
         <div id="insert_data" class="view">
-          <form action="#" id="form_data">
+            <form action="#" id="form_data" enctype="multipart/form_data">
             <div class="row">
               <div class="col">
                 <div class="form-group">
@@ -58,6 +57,12 @@
                 </div>
               </div>
             </div>
+            <div class="form-group">
+                  <input type="file" name="foto" id="foto">
+                  <input type="hidden" name="ruta" id="ruta" readonly="readonly">
+                </div>
+                <div id="preview"></div>
+              </div>
             <div class="row">
               <div class="col">
                 <button type="button" class="btn btn-success" id="guardar_datos">Guardar</button>
@@ -75,10 +80,12 @@
   <script>
     function change_view(vista = 'show_data'){
       $("#main").find(".view").each(function(){
+        // $(this).addClass("d-none");
         $(this).slideUp('fast');
         let id = $(this).attr("id");
         if(vista == id){
           $(this).slideDown(300);
+          // $(this).removeClass("d-none");
         }
       });
 
@@ -96,8 +103,8 @@
           <td>${e.subtitulo_do}</td>
           <td>${e.boton_do}</td>
           <td>
-          <a href="#" data-id="${e.id_do}">Editar</a>
-          <a href="#" data-id="${e.id_do}">Eliminar</a>
+          <a href="#" data-id="${e.id_do}" class="ceditar_downloads">Editar</a>
+          <a href="#" data-id="${e.id_do}" class="eliminar_downloads">Eliminar</a>
           </td>
           </tr>
           `;
@@ -132,20 +139,101 @@
           return false;
         }
       });
-      $.post("includes/_funciones.php", obj, function(verificado){ 
-      if (verificado != "" ) {
-       alert("Referencias de Descarga Registrado");
-        }
-      else {
-        alert("Referencias de Descarga NO Registrado");
-      } 
+      if($(this).data("editar") == 1){
+          obj["accion"] = "ceditar_downloads";
+          obj["id"] = $(this).data("id");
+          $(this).text("Guardar").data("editar",0);
+          $("#form_data")[0].reset();
+      }
+
+      $.post("includes/_funciones.php", obj, function(respuesta){ 
+        alert(respuesta);
+       if (respuesta == "Se inserto download en la BD ") {
+          change_view();
+          consultar();
+         }
+        if (respuesta == "Se edito download correctamente") {
+            change_view();
+            consultar();
+          } 
      }
      );
     });
+//** ELIMINAR REGISTRO **//
+$("#main").on("click",".eliminar_downloads",function(e){
+e.preventDefault();
+let confirmacion = confirm("Desea eliminar esta variable");
+if(confirmacion){
+let id = $(this).data('id');
+obj = {
+  "accion" : "eliminar_downloads",
+  "id" : id
+};
+$.post("includes/_funciones.php", obj, function(respuesta){
+alert(respuesta);
+consultar();
+});
 
+
+}else{
+  alert("El registro no se esta eliminado");
+}
+
+
+});
+
+//** EDITAR **//
+    $('#list-download').on("click",".ceditar_downloads", function(e){
+        e.preventDefault();
+    let id = $(this).data('id');
+         obj = {
+      "accion" : "ceditar_downloads",
+      "id" : id
+    };
+    $("#form_data")[0].reset();
+    change_view('insert_data');
+    $("#guardar_datos").text("Editar").data("editar",1).data("id", id);
+    $.post('includes/_funciones.php', obj, function(r){
+      $("#titulo_do").val(r.titulo_do);
+      $("#subtitulo_do").val(r.subtitulo_do);
+      $("#boton_do").val(r.boton_do);      
+        }, "JSON");
+
+        consultar();          
+            });
+
+///// FUNCTION PHOTO  //////
+    $("#foto").on("change", function (e) {
+      let formDatos = new FormData($("#form_data")[0]);
+      formDatos.append("accion", "carga_foto");
+      $.ajax({
+        url: "includes/_funciones.php",
+        type: "POST",
+        data: formDatos,
+        contentType: false,
+        processData: false,
+        success: function (datos) {
+          let respuesta = JSON.parse(datos);
+          if(respuesta.status == 0){
+            alert("No se cargó la foto");
+          }
+          let template = `
+          <img src="${respuesta.archivo}" alt="" class="img-fluid" />
+          `;
+          $("#ruta").val(respuesta.archivo);
+          $("#preview").html(template);
+        }
+      });
+    });
+
+
+//** CANCELAR **//
     $("#main").find(".cancelar").click(function(){
       change_view();
-      $("#form_data")[0].reset();
+         $("#form_data")[0].reset();
+      if ($("#guardar_datos").data("editar") == 1) {
+        $("#guardar_datos").text("Guardar").data("editar",0);
+      }
     });
   </script>
 </body>

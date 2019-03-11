@@ -39,7 +39,7 @@
           </table>
         </div>
         <div id="insert_data" class="view">
-          <form action="#" id="form_data">
+          <form action="#" id="form_data" enctype="multipart/form_data">
             <div class="row">
               <div class="col">
                 <div class="form-group">
@@ -58,6 +58,12 @@
                 </div>
               </div>
             </div>
+            <div class="form-group">
+                  <input type="file" name="foto" id="foto">
+                  <input type="hidden" name="ruta" id="ruta" readonly="readonly">
+                </div>
+                <div id="preview"></div>
+              </div>
             <div class="row">
               <div class="col">
                 <button type="button" class="btn btn-success" id="guardar_datos">Guardar</button>
@@ -75,10 +81,12 @@
   <script>
     function change_view(vista = 'show_data'){
       $("#main").find(".view").each(function(){
+        // $(this).addClass("d-none");
         $(this).slideUp('fast');
         let id = $(this).attr("id");
         if(vista == id){
           $(this).slideDown(300);
+          // $(this).removeClass("d-none");
         }
       });
 
@@ -96,8 +104,8 @@
           <td>${e.cita_tes}</td>
           <td>${e.persona_tes}</td>
           <td>
-          <a href="#" data-id="${e.id_tes}">Editar</a>
-          <a href="#" data-id="${e.id_tes}">Eliminar</a>
+          <a href="#" data-id="${e.id_tes}class="ceditar_testimonials">Editar</a>
+          <a href="#" data-id="${e.id_tes}class="eliminar_testimonials">Eliminar</a>
           </td>
           </tr>
           `;
@@ -114,9 +122,11 @@
     });
 
     $("#guardar_datos").click(function(guardar){
+     // Funcion para guardar Datos
       let imagen = $("#imagen").val();
       let cita = $("#cita").val();
       let persona = $("#persona").val();
+      // Inicializar el objetos
       let obj ={
         "accion" : "insertar_testimonials",
         "imagen" : imagen,
@@ -132,20 +142,102 @@
           return false;
         }
       });
-      $.post("includes/_funciones.php", obj, function(verificado){ 
-      if (verificado != "" ) {
-       alert("Testimonio Registrado");
-        }
-      else {
-        alert("Testimonio NO Registrado");
-      } 
+
+      if($(this).data("editar") == 1){
+          obj["accion"] = "ceditar_testimonials";
+          obj["id"] = $(this).data("id");
+          $(this).text("Guardar").data("editar",0);
+          $("#form_data")[0].reset();
+      }
+
+      $.post("includes/_funciones.php", obj, function(respuesta){ 
+        alert(respuesta);
+       if (respuesta == "Se inserto el testimonials en la BD ") {
+          change_view();
+          consultar();
+         }
+        if (respuesta == "Se edito el testimonial correctamente") {
+            change_view();
+            consultar();
+          } 
      }
      );
     });
+//** ELIMINAR REGISTRO **//
+$("#main").on("click",".eliminar_testimonials",function(e){
+e.preventDefault();
+let confirmacion = confirm("Desea eliminar esta variable");
+if(confirmacion){
+let id = $(this).data('id');
+obj = {
+  "accion" : "eliminar_testimonials",
+  "id" : id
+};
+$.post("includes/_funciones.php", obj, function(respuesta){
+alert(respuesta);
+consultar();
+});
 
+
+}else{
+  alert("El testimonial no se esta eliminado");
+}
+
+
+});
+
+//** EDITAR **//
+    $('#list-testimonials').on("click",".ceditar_testimonials", function(e){
+        e.preventDefault();
+    let id = $(this).data('id');
+         obj = {
+      "accion" : "ceditar_testimonials",
+      "id" : id
+    };
+    $("#form_data")[0].reset();
+    change_view('insert_data');
+    $("#guardar_datos").text("Editar").data("editar",1).data("id", id);
+    $.post('includes/_funciones.php', obj, function(r){
+      $("#img_tes").val(r.img_tes);
+      $("#cita_tes").val(r.cita_tes);
+      $("#persona_tes").val(r.persona_tes);     
+        }, "JSON");
+
+        consultar();          
+            });
+
+///// FUNCTION PHOTO  //////
+    $("#foto").on("change", function (e) {
+      let formDatos = new FormData($("#form_data")[0]);
+      formDatos.append("accion", "carga_foto");
+      $.ajax({
+        url: "includes/_funciones.php",
+        type: "POST",
+        data: formDatos,
+        contentType: false,
+        processData: false,
+        success: function (datos) {
+          let respuesta = JSON.parse(datos);
+          if(respuesta.status == 0){
+            alert("No se cargó la foto");
+          }
+          let template = `
+          <img src="${respuesta.archivo}" alt="" class="img-fluid" />
+          `;
+          $("#ruta").val(respuesta.archivo);
+          $("#preview").html(template);
+        }
+      });
+    });
+
+
+//** CANCELAR **//
     $("#main").find(".cancelar").click(function(){
       change_view();
-      $("#form_data")[0].reset();
+         $("#form_data")[0].reset();
+      if ($("#guardar_datos").data("editar") == 1) {
+        $("#guardar_datos").text("Guardar").data("editar",0);
+      }
     });
   </script>
 </body>

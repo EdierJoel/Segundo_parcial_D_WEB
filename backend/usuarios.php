@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,7 +12,7 @@
   <link href="css/estilos.css" rel="stylesheet">
 </head>
 <body>
-  <?php require_once("navbar.php");   ?>
+  <?php require_once("navbar.php");?>
 
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" id="main">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -37,7 +38,7 @@
           </table>
         </div>
         <div id="insert_data" class="view">
-          <form action="#" id="form_data">
+          <form action="#" id="form_data" enctype="multipart/form_data" >
             <div class="row">
               <div class="col">
                 <div class="form-group">
@@ -48,6 +49,11 @@
                   <label for="correo">Correo Electrónico</label>
                   <input type="email" id="correo" name="correo" class="form-control">
                 </div>
+                <div class="form-group">
+                  <input type="file" name="foto" id="foto">
+                  <input type="hidden" name="ruta" id="ruta" readonly="readonly">
+                </div>
+                <div id="preview"></div>
               </div>
               <div class="col">
                 <div class="form-group">
@@ -75,18 +81,18 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
   <script>
+//** VISTA **//
     function change_view(vista = 'show_data'){
       $("#main").find(".view").each(function(){
-        // $(this).addClass("d-none");
         $(this).slideUp('fast');
         let id = $(this).attr("id");
         if(vista == id){
           $(this).slideDown(300);
-          // $(this).removeClass("d-none");
         }
       });
 
     }
+//** CONSULTAR **//
     function consultar(){
       let obj = {
         "accion" : "consultar_usuarios"
@@ -99,8 +105,8 @@
           <td>${e.nombre_usr}</td>
           <td>${e.telefono_usr}</td>
           <td>
-          <a href="#" data-id="${e.id_usr}"class="editar_registro">Editar</a>
-          <a href="#" data-id="${e.id_usr}"class="eliminar_registro">Eliminar</a>
+          <a href="#" data-id="${e.id_usr}" class="editar_registro">Editar</a>
+          <a href="#" data-id="${e.id_usr}" class="eliminar_registro">Eliminar</a>
           </td>
           </tr>
           `;
@@ -116,7 +122,7 @@
       change_view('insert_data');
     });
 
-    $("#guardar_datos").click(function(guardar){
+    $("#guardar_datos").click(function(){
       let nombre = $("#nombre").val();
       let correo = $("#correo").val();
       let telefono = $("#telefono").val();
@@ -137,37 +143,103 @@
           return false;
         }
       });
-      $.post("includes/_funciones.php", obj, function(verificado){ 
-      if (verificado != "" ) {
-       alert("Usuario Registrado");
-        }
-      else {
-        alert("Usuario NO Registrado");
-      } 
+
+      if($(this).data("editar") == 1){
+          obj["accion"] = "editar_usuarios";
+          obj["id"] = $(this).data("id");
+          $(this).text("Guardar").data("editar",0);
+          $("#form_data")[0].reset();
+      }
+
+      $.post("includes/_funciones.php", obj, function(respuesta){ 
+        alert(respuesta);
+       if (respuesta == "Se inserto el usuario en la BD ") {
+          change_view();
+          consultar();
+         }
+        if (respuesta == "Se edito el usuario correctamente") {
+            change_view();
+            consultar();
+          } 
      }
      );
     });
-    $("#main").on("click",".eliminar_registro",function(e){
-    e.preventDefault();
-    let confirmacion = confirm("Desea eliminar esta registro");
-    if(confirmacion){
-    let id = $(this).data('id');
-    obj = {
-     "accion" : "eliminar_registro",
-     "registro" : id
+//** ELIMINAR REGISTRO **//
+$("#main").on("click",".eliminar_registro",function(e){
+e.preventDefault();
+let confirmacion = confirm("Desea eliminar esta variable");
+if(confirmacion){
+let id = $(this).data('id');
+obj = {
+  "accion" : "eliminar_registro",
+  "id" : id
 };
-    $.post("includes/_funciones.php", obj, function(respuesta){
-  alert(respuesta);
-    consultar();
+$.post("includes/_funciones.php", obj, function(respuesta){
+alert(respuesta);
+consultar();
 });
-   }else{
-    alert("El registro no se ha eliminado");}
+
+
+}else{
+  alert("El registro no se esta eliminado");
+}
+
 
 });
 
+//** EDITAR **//
+    $('#list-usuarios').on("click",".editar_registro", function(e){
+        e.preventDefault();
+    let id = $(this).data('id');
+         obj = {
+      "accion" : "editar_registro",
+      "id" : id
+    };
+    $("#form_data")[0].reset();
+    change_view('insert_data');
+    $("#guardar_datos").text("Editar").data("editar",1).data("id", id);
+    $.post('includes/_funciones.php', obj, function(r){
+      $("#nombre").val(r.nombre_usr);
+      $("#correo").val(r.correo_usr);
+      $("#password").val(r.password);
+      $("#telefono").val(r.telefono_usr);      
+        }, "JSON");
+
+        consultar();          
+            });
+
+///// FUNCTION PHOTO  //////
+    $("#foto").on("change", function (e) {
+      let formDatos = new FormData($("#form_data")[0]);
+      formDatos.append("accion", "carga_foto");
+      $.ajax({
+        url: "includes/_funciones.php",
+        type: "POST",
+        data: formDatos,
+        contentType: false,
+        processData: false,
+        success: function (datos) {
+          let respuesta = JSON.parse(datos);
+          if(respuesta.status == 0){
+            alert("No se cargó la foto");
+          }
+          let template = `
+          <img src="${respuesta.archivo}" alt="" class="img-fluid" />
+          `;
+          $("#ruta").val(respuesta.archivo);
+          $("#preview").html(template);
+        }
+      });
+    });
+
+
+//** CANCELAR **//
     $("#main").find(".cancelar").click(function(){
       change_view();
-      $("#form_data")[0].reset();
+         $("#form_data")[0].reset();
+      if ($("#guardar_datos").data("editar") == 1) {
+        $("#guardar_datos").text("Guardar").data("editar",0);
+      }
     });
   </script>
 </body>

@@ -42,4 +42,17 @@ header .nav-link:hover{background: #fff;color: #31344e}
 
 #copyrightp{  margin-top: 40px;  font-family: 'Relaway';  color: #9E9E9D;  text-align: center;  margin-top: 20px;}
 
+@media (min-width: 576px) and (max-width: 767px ) {
 
+#logotipo{display: block;margin top: 20px;}
+
+}
+
+@media (min-width: 768px) { 
+	 }
+
+@media (min-width: 992px) { 
+	 }
+
+@media (min-width: 1200px) { 
+	 }
