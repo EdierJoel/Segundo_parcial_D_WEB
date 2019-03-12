@@ -104,8 +104,8 @@
           <td>${e.cita_tes}</td>
           <td>${e.persona_tes}</td>
           <td>
-          <a href="#" data-id="${e.id_tes}class="ceditar_testimonials">Editar</a>
-          <a href="#" data-id="${e.id_tes}class="eliminar_testimonials">Eliminar</a>
+          <a href="#" data-id="${e.id_tes}" class="ceditar_testimonials">Editar</a>
+          <a href="#" data-id="${e.id_tes}" class="eliminar_testimonials">Eliminar</a>
           </td>
           </tr>
           `;
@@ -180,7 +180,7 @@ consultar();
 
 
 }else{
-  alert("El testimonial no se esta eliminado");
+  alert("El testimonial no esta eliminado");
 }
 
 

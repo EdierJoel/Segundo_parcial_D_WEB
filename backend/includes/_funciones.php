@@ -449,7 +449,7 @@ function eliminar_testimonials($id){
 		echo "Se genero un error intenta nuevamente";
 	}
 }
-function ceditar_testimonials($id){
+function editar_testimonials($id){
 	global $mysqli;
 	$consulta = "SELECT * FROM testimonial WHERE id_tes = '$id'";
 	$resultado = mysqli_query($mysqli, $consulta);
@@ -457,7 +457,7 @@ function ceditar_testimonials($id){
 	    echo json_encode($fila);
 	}
 
-function editar_testimonials($id){
+function ceditar_testimonials($id){
 	global $mysqli;
 	$img_tes = $_POST["imagen"];
 	$cita_tes = $_POST["cita"];	
@@ -490,7 +490,7 @@ function insertar_download(){
 	}
 	echo json_encode($arregloin); //Imprime el JSON ENCODEADO
 }
-function eliminar_download($id){
+function eliminar_downloads($id){
 	global $mysqli;
 	$consulta = "DELETE FROM download WHERE id_do = $id";
 	$resultado = mysqli_query($mysqli, $consulta);
@@ -501,7 +501,7 @@ function eliminar_download($id){
 		echo "Se genero un error intenta nuevamente";
 	}
 }
-function ceditar_download($id){
+function editar_downloads($id){
 	global $mysqli;
 	$consulta = "SELECT * FROM download WHERE id_do = '$id'";
 	$resultado = mysqli_query($mysqli, $consulta);
@@ -509,7 +509,7 @@ function ceditar_download($id){
 	    echo json_encode($fila);
 	}
 
-function editar_download($id){
+function ceditar_downloads($id){
 	global $mysqli;
 	$titulo_do = $_POST["titulo"];
 	$subtitulo_do = $_POST["subtitulo"];	
