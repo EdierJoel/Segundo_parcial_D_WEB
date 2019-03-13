@@ -143,8 +143,8 @@
         }
       });
 
-      if($(this).data("editar") == 1){
-          obj["accion"] = "ceditar_testimonials";
+       if($(this).data("editar") == 1){
+          obj["accion"] = "editar_testimonials";
           obj["id"] = $(this).data("id");
           $(this).text("Guardar").data("editar",0);
           $("#form_data")[0].reset();
@@ -152,7 +152,7 @@
 
       $.post("includes/_funciones.php", obj, function(respuesta){ 
         alert(respuesta);
-       if (respuesta == "Se inserto el testimonials en la BD ") {
+       if (respuesta == "Se inserto testimonial en la BD ") {
           change_view();
           consultar();
          }
@@ -198,9 +198,9 @@ consultar();
     change_view('insert_data');
     $("#guardar_datos").text("Editar").data("editar",1).data("id", id);
     $.post('includes/_funciones.php', obj, function(r){
-      $("#img_tes").val(r.img_tes);
-      $("#cita_tes").val(r.cita_tes);
-      $("#persona_tes").val(r.persona_tes);     
+      $("#imagen").val(r.img_tes);
+      $("#cita").val(r.cita_tes);
+      $("#persona").val(r.persona_tes);     
         }, "JSON");
 
         consultar();          

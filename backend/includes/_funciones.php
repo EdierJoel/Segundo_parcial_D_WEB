@@ -104,7 +104,7 @@ switch ($_POST["accion"]) {
 	case 'insertar_testimonials':
 	insertar_testimonials();
 	break;
-		case 'eliminar_testimonials':
+	case 'eliminar_testimonials':
 	eliminar_testimonials($_POST["id"]);
 	break;
 	case 'ceditar_testimonials':
@@ -436,7 +436,7 @@ function insertar_testimonials(){
 	while($filain = mysqli_fetch_array($resultadoin)){
 		array_push($arregloin, $filain);
 	}
-	echo json_encode($arregloin); //Imprime el JSON ENCODEADO
+	echo json_encode($arregloin); 
 }
 function eliminar_testimonials($id){
 	global $mysqli;
@@ -449,7 +449,7 @@ function eliminar_testimonials($id){
 		echo "Se genero un error intenta nuevamente";
 	}
 }
-function editar_testimonials($id){
+function ceditar_testimonials($id){
 	global $mysqli;
 	$consulta = "SELECT * FROM testimonial WHERE id_tes = '$id'";
 	$resultado = mysqli_query($mysqli, $consulta);
@@ -457,7 +457,7 @@ function editar_testimonials($id){
 	    echo json_encode($fila);
 	}
 
-function ceditar_testimonials($id){
+function editar_testimonials($id){
 	global $mysqli;
 	$img_tes = $_POST["imagen"];
 	$cita_tes = $_POST["cita"];	
@@ -482,7 +482,7 @@ function insertar_download(){
 	$titulo_do = $_POST["titulo"];
 	$subtitulo_do = $_POST["subtitulo"];	
 	$boton_do = $_POST["boton"];	
-	$consultain = "INSERT INTO download VALUES('','$titulo_do','$subtitulo_do','$boton_do')";
+	$consultain = "INSERT INTO download VALUES('','$titulo_do','$subtitulo_do','$boton_do' )";
 	$resultadoin = mysqli_query($mysqli, $consultain);
 	$arregloin = [];
 	while($filain = mysqli_fetch_array($resultadoin)){
@@ -501,7 +501,7 @@ function eliminar_downloads($id){
 		echo "Se genero un error intenta nuevamente";
 	}
 }
-function editar_downloads($id){
+function ceditar_downloads($id){
 	global $mysqli;
 	$consulta = "SELECT * FROM download WHERE id_do = '$id'";
 	$resultado = mysqli_query($mysqli, $consulta);
@@ -509,7 +509,7 @@ function editar_downloads($id){
 	    echo json_encode($fila);
 	}
 
-function ceditar_downloads($id){
+function editar_downloads($id){
 	global $mysqli;
 	$titulo_do = $_POST["titulo"];
 	$subtitulo_do = $_POST["subtitulo"];	
